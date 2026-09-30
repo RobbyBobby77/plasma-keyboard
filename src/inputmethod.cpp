@@ -5,6 +5,7 @@
 */
 
 #include "inputmethod_p.h"
+#include "keycombination.h"
 #include <QDateTime>
 #include <QDebug>
 #include <QGuiApplication>
@@ -113,6 +114,21 @@ Keyboard::~Keyboard()
 {
     // needs version guarding, and the versioning here is messed up here, unless we're in sync with seat :/
     //        release();
+}
+
+void Keyboard::sendKeyCombination(int key, Qt::KeyboardModifiers modifiers)
+{
+    const auto combination = keyCombination(mXkbKeymap.get(), mXkbState.get(), key, modifiers);
+    if (!combination) {
+        return;
+    }
+    // Use the compositor's keymap rather than assuming fixed modifier bit positions.
+    // Restore the physical keyboard state immediately so a latched Ctrl/Alt never sticks.
+    const auto originalDepressed = xkb_state_serialize_mods(mXkbState.get(), XKB_STATE_MODS_DEPRESSED);
+    m_parent->modifiers(m_parent->m_lastKeyboardSerial, combination->depressed, combination->latched, combination->locked, combination->group);
+    m_parent->key(m_parent->m_lastKeyboardSerial, m_parent->m_lastKeyboardTime, combination->scancode, WL_KEYBOARD_KEY_STATE_PRESSED);
+    m_parent->key(m_parent->m_lastKeyboardSerial, m_parent->m_lastKeyboardTime, combination->scancode, WL_KEYBOARD_KEY_STATE_RELEASED);
+    m_parent->modifiers(m_parent->m_lastKeyboardSerial, originalDepressed, combination->latched, combination->locked, combination->group);
 }
 
 void Keyboard::keyboard_keymap(uint32_t format, int32_t fd, uint32_t size)

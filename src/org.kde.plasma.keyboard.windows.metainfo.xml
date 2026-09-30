@@ -4,8 +4,8 @@
   SPDX-FileCopyrightText: 2025 Aleix Pol Gonzalez <aleixpol@kde.org>
  -->
 <component type="inputmethod">
-  <id>org.kde.plasma.keyboard</id>
-  <name>Plasma Keyboard</name>
+  <id>org.kde.plasma.keyboard.windows</id>
+  <name>Plasma Keyboard — Windows Touch</name>
   <name xml:lang="ar">لوحة المفاتيح بلازما</name>
   <name xml:lang="bg">Клавиатура на Plasma</name>
   <name xml:lang="ca">Teclat del Plasma</name>
@@ -254,7 +254,7 @@
   </description>
   <screenshots>
     <screenshot type="default">
-      <image>https://cdn.kde.org/screenshots/plasma-keyboard/plasma-keyboard.png</image>
+      <image>https://raw.githubusercontent.com/RobbyBobby77/plasma-keyboard/windows-touch-layout/docs/keyboard-preview.png</image>
     </screenshot>
   </screenshots>
   <developer id="kde.org">
@@ -263,9 +263,9 @@
   </developer>
   <content_rating type="oars-1.1"/>
   <project_group>KDE</project_group>
-  <url type="homepage">https://kde.org/plasma-desktop/</url>
+  <url type="homepage">https://github.com/RobbyBobby77/plasma-keyboard</url>
   <provides>
-    <binary>plasma-keyboard</binary>
+    <binary>plasma-keyboard-windows</binary>
   </provides>
   <releases>
     <release version="6.7.5" date="2026-09-08"/>

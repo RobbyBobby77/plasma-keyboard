@@ -12,8 +12,8 @@ import QtQuick.Effects
 
 import org.kde.kirigami as Kirigami
 
-import org.kde.plasma.keyboard
-import org.kde.plasma.keyboard.lib as PlasmaKeyboard
+import org.kde.plasma.keyboard.windows
+import org.kde.plasma.keyboard.windows.lib as PlasmaKeyboard
 
 KeyboardStyle {
     id: currentStyle
@@ -50,49 +50,15 @@ KeyboardStyle {
         }
     }
 
-    // Always have the keyboard panel be 30% of the screen height, or 150px (whichever is larger)
-    readonly property real targetKeyboardHeight: Math.max(Screen.height * 0.3, 150)
-
-    // The value to multiply the height by to get the width
-    readonly property real aspectRatio: {
-        // Ratio to just fill the screen width
-        const fillScreenWidth = Screen.width / targetKeyboardHeight;
-        if (PlasmaKeyboardSettings.panelFillScreenWidth) {
-            return fillScreenWidth;
-        }
-
-        const targetAspectRatio = 3.0; // Target width = 3 * height
-        return Math.min(fillScreenWidth, targetAspectRatio);
-    }
-
-    // Calculate width based on the height so that the keyboard height is always targetKeyboardHeight
-    keyboardDesignWidth: aspectRatio * keyboardDesignHeight;
-    keyboardDesignHeight: {
-        if (Screen.width < 500) {
-            // Phone mode
-            return 800;
-        } else if (Screen.width < 1200) {
-            // Wider
-            return 600;
-        }
-        // Widest
-        return 700;
-    }
-
-    // The width should never be > 6 times height
-    readonly property real maxWidthToHeightRatio: 6
-
-    keyboardRelativeLeftMargin: {
-        if (keyboardDesignWidth > keyboardDesignHeight * maxWidthToHeightRatio) {
-            // Cap keyboard width if it's too wide
-            const extraWidth = keyboardDesignWidth - (keyboardDesignHeight * maxWidthToHeightRatio);
-            return (extraWidth / 2) / keyboardDesignWidth;
-        }
-        return 6 / keyboardDesignWidth;
-    }
+    readonly property real targetKeyboardHeight: Math.min(Math.max(Screen.height * 0.24, 170), 320)
+    readonly property real aspectRatio: Math.min(Screen.width / targetKeyboardHeight,
+                                                PlasmaKeyboardSettings.panelFillScreenWidth ? Screen.width / targetKeyboardHeight : 3.35)
+    keyboardDesignHeight: 500
+    keyboardDesignWidth: aspectRatio * keyboardDesignHeight
+    keyboardRelativeLeftMargin: 4 / keyboardDesignWidth
     keyboardRelativeRightMargin: keyboardRelativeLeftMargin
-    keyboardRelativeTopMargin: 6 / keyboardDesignHeight
-    keyboardRelativeBottomMargin: 6 / keyboardDesignHeight
+    keyboardRelativeTopMargin: 4 / keyboardDesignHeight
+    keyboardRelativeBottomMargin: 4 / keyboardDesignHeight
 
     keyboardBackground: Rectangle {
         color: theme.keyboardBackgroundColor
@@ -109,13 +75,13 @@ KeyboardStyle {
                 text: control.smallText
                 visible: control.smallTextVisible
                 color: theme.keySmallTextColor
-                anchors.right: parent.right
+                anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
-                anchors.margins: theme.keyContentMargin / 3
+                anchors.topMargin: 4 * scaleHint
                 font {
                     family: theme.fontFamily
-                    weight: Font.Light
-                    pixelSize: 30 * scaleHint
+                    weight: Font.Normal
+                    pixelSize: 18 * scaleHint
                     capitalization: control.uppercased ? Font.AllUppercase : Font.MixedCase
                 }
             }
@@ -130,12 +96,12 @@ KeyboardStyle {
                 text: control.displayText
                 color: theme.keyTextColor
                 horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: control.displayText.length > 1 ? Text.AlignVCenter : Text.AlignBottom
+                verticalAlignment: Text.AlignVCenter
                 anchors.centerIn: parent
                 font {
                     family: theme.fontFamily
-                    weight: Font.Light
-                    pixelSize: 60 * scaleHint
+                    weight: Font.Normal
+                    pixelSize: 25 * scaleHint
                     capitalization: control.uppercased ? Font.AllUppercase : Font.MixedCase
                 }
             }
@@ -202,11 +168,12 @@ KeyboardStyle {
         id: languageKeyPanel
 
         Item {
-            Kirigami.Icon {
+            QQC2.Label {
                 id: languageKeyIcon
                 anchors.centerIn: parent
-                implicitHeight: 96 * theme.keyIconScale
-                source: "globe"
+                text: InputContext.locale.startsWith("en_") ? "ENG" : InputContext.locale.split("_")[0].toUpperCase()
+                color: theme.keySmallTextColor
+                font.pixelSize: 22 * scaleHint
             }
         }
 
@@ -233,7 +200,7 @@ KeyboardStyle {
             id: enterKeyBackground
             Kirigami.Icon {
                 id: enterKeyIcon
-                visible: enterKeyText.text.length === 0
+                visible: false
                 anchors.centerIn: parent
                 readonly property size enterKeyIconSize: {
                     switch (control.actionId) {
@@ -266,7 +233,7 @@ KeyboardStyle {
             QQC2.Label {
                 id: enterKeyText
                 visible: text.length !== 0
-                text: control.actionId !== EnterKeyAction.None ? control.displayText : ""
+                text: control.displayText.length > 0 ? control.displayText : "Enter"
                 clip: true
                 fontSizeMode: Text.HorizontalFit
                 horizontalAlignment: Text.AlignHCenter
@@ -274,12 +241,12 @@ KeyboardStyle {
                 color: theme.keyTextColor
                 font {
                     family: theme.fontFamily
-                    weight: Font.Light
-                    pixelSize: 50 * scaleHint
-                    capitalization: Font.AllUppercase
+                    weight: Font.Normal
+                    pixelSize: 25 * scaleHint
+                    capitalization: Font.MixedCase
                 }
                 anchors.fill: parent
-                anchors.margins: Math.round(42 * scaleHint)
+                anchors.margins: Math.round(8 * scaleHint)
             }
         }
 
@@ -335,25 +302,19 @@ KeyboardStyle {
         id: shiftKeyPanel
 
         Item {
-            Kirigami.Icon {
+            QQC2.Label {
                 id: shiftKeyIcon
                 anchors.centerIn: parent
-                implicitHeight: 134 * theme.keyIconScale
-                source: {
-                    if (InputContext.capsLockActive) {
-                        return "keyboard-caps-locked-symbolic";
-                    } else if (InputContext.shiftActive) {
-                        return "keyboard-caps-enabled-symbolic";
-                    }
-                    return "keyboard-caps-disabled-symbolic";
-                }
+                text: "Shift"
+                color: theme.keyTextColor
+                font.pixelSize: 25 * scaleHint
             }
         }
 
         states: [
             State {
                 name: "capsLockActive"
-                when: InputContext.capsLockActive
+                when: InputContext.capsLockActive || InputContext.shiftActive
                 PropertyChanges {
                     target: shiftKeyPanel
                     color: theme.capsLockKeyAccentColor
@@ -381,13 +342,13 @@ KeyboardStyle {
             QQC2.Label {
                 id: spaceKeyText
                 anchors.centerIn: parent
-                text: Qt.locale(InputContext.locale).nativeLanguageName
+                text: ""
                 color: theme.keyTextColor
                 opacity: inputLocaleIndicatorOpacity
                 Behavior on opacity { PropertyAnimation { duration: 250 } }
                 font {
                     family: theme.fontFamily
-                    weight: Font.Light
+                    weight: Font.Normal
                     pixelSize: 35 * scaleHint
                 }
             }
@@ -418,9 +379,9 @@ KeyboardStyle {
                 verticalAlignment: Text.AlignVCenter
                 font {
                     family: theme.fontFamily
-                    weight: Font.Light
+                    weight: Font.Normal
                     pixelSize: 40 * scaleHint
-                    capitalization: Font.AllUppercase
+                    capitalization: Font.MixedCase
                 }
             }
         }
@@ -456,9 +417,9 @@ KeyboardStyle {
                 anchors.margins: theme.keyContentMargin
                 font {
                     family: theme.fontFamily
-                    weight: Font.Light
+                    weight: Font.Normal
                     pixelSize: 40 * scaleHint
-                    capitalization: Font.AllUppercase
+                    capitalization: Font.MixedCase
                 }
             }
             Rectangle {
@@ -563,7 +524,7 @@ KeyboardStyle {
                 height: characterPreviewBackground.largeTextHeight
                 font {
                     family: theme.fontFamily
-                    weight: Font.Light
+                    weight: Font.Normal
                     pixelSize: 82 * scaleHint
                 }
             }
@@ -581,7 +542,7 @@ KeyboardStyle {
                 height: characterPreviewBackground.smallTextHeight
                 font {
                     family: theme.fontFamily
-                    weight: Font.Light
+                    weight: Font.Normal
                     pixelSize: 62 * scaleHint
                 }
             }
@@ -599,7 +560,7 @@ KeyboardStyle {
                 height: characterPreviewBackground.smallTextHeight
                 font {
                     family: theme.fontFamily
-                    weight: Font.Light
+                    weight: Font.Normal
                     pixelSize: 62 * scaleHint
                 }
             }
@@ -617,7 +578,7 @@ KeyboardStyle {
                 height: characterPreviewBackground.smallTextHeight
                 font {
                     family: theme.fontFamily
-                    weight: Font.Light
+                    weight: Font.Normal
                     pixelSize: 62 * scaleHint
                 }
             }
@@ -635,7 +596,7 @@ KeyboardStyle {
                 height: characterPreviewBackground.smallTextHeight
                 font {
                     family: theme.fontFamily
-                    weight: Font.Light
+                    weight: Font.Normal
                     pixelSize: 62 * scaleHint
                 }
             }
@@ -663,8 +624,8 @@ KeyboardStyle {
             opacity: 0.8
             font {
                 family: theme.fontFamily
-                weight: Font.Light
-                pixelSize: 60 * scaleHint
+                weight: Font.Normal
+                pixelSize: 25 * scaleHint
             }
             anchors.centerIn: parent
         }
@@ -708,7 +669,7 @@ KeyboardStyle {
             opacity: 0.9
             font {
                 family: theme.fontFamily
-                weight: Font.Light
+                weight: Font.Normal
                 pixelSize: 44 * scaleHint
             }
             function decorateText(text, wordCompletionLength) {
@@ -803,7 +764,7 @@ KeyboardStyle {
                 anchors.margins: theme.keyContentMargin
                 font {
                     family: theme.fontFamily
-                    weight: Font.Light
+                    weight: Font.Normal
                     pixelSize: 44 * scaleHint
                     capitalization: {
                         if (InputContext.capsLockActive)
@@ -901,7 +862,7 @@ KeyboardStyle {
             opacity: 0.8
             font {
                 family: theme.fontFamily
-                weight: Font.Light
+                weight: Font.Normal
                 pixelSize: Qt.inputMethod.cursorRectangle.height * 0.8
             }
             function decorateText(text, wordCompletionLength) {
@@ -948,7 +909,7 @@ KeyboardStyle {
             opacity: 0.8
             font {
                 family: theme.fontFamily
-                weight: Font.Light
+                weight: Font.Normal
                 pixelSize: 44 * scaleHint
             }
         }
@@ -956,7 +917,7 @@ KeyboardStyle {
             id: languageNameTextMetrics
             font {
                 family: theme.fontFamily
-                weight: Font.Light
+                weight: Font.Normal
                 pixelSize: 44 * scaleHint
             }
             text: "X"
@@ -965,7 +926,7 @@ KeyboardStyle {
             id: languageNameFormatter
             font {
                 family: theme.fontFamily
-                weight: Font.Light
+                weight: Font.Normal
                 pixelSize: 44 * scaleHint
             }
             elide: Text.ElideRight

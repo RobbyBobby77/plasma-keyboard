@@ -114,6 +114,13 @@ void InputPlugin::key(KeyState state, quint32 scancode)
     m_context->key(m_context->m_lastKeyboardSerial, m_context->m_lastKeyboardTime, scancode, static_cast<uint32_t>(state));
 }
 
+void InputPlugin::sendKeyCombination(int key, Qt::KeyboardModifiers modifiers)
+{
+    if (m_keyboard) {
+        m_keyboard->sendKeyCombination(key, modifiers);
+    }
+}
+
 InputPlugin::ContentHint InputPlugin::contentHint() const
 {
     if (!m_context) {

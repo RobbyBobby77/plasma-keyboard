@@ -94,6 +94,8 @@ public:
     Keyboard(::wl_keyboard *keyboard, InputMethodContext *parent);
     ~Keyboard();
 
+    void sendKeyCombination(int key, Qt::KeyboardModifiers modifiers);
+
 Q_SIGNALS:
     void keyPressed(QKeyEvent *keyEvent);
     void keyReleased(QKeyEvent *keyEvent);

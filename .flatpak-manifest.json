@@ -1,10 +1,10 @@
 {
-    "id": "org.kde.plasma.keyboard",
+    "id": "org.kde.plasma.keyboard.windows",
     "branch": "master",
     "runtime": "org.kde.Platform",
     "runtime-version": "6.10",
     "sdk": "org.kde.Sdk",
-    "command": "plasma-keyboard",
+    "command": "plasma-keyboard-windows",
     "tags": [
         "nightly"
     ],
@@ -15,7 +15,8 @@
         "--socket=wayland",
         "--socket=inherit-wayland-socket",
         "--env=QML2_IMPORT_PATH=/app/qml:/app/lib/qml:/app/lib64/qml",
-        "--env=QT_PLUGIN_PATH=/app/plugins:/app/lib64/plugins:/app/lib/plugins:/usr/share/runtime/lib/plugins"
+        "--env=QT_PLUGIN_PATH=/app/plugins:/app/lib64/plugins:/app/lib/plugins:/usr/share/runtime/lib/plugins",
+        "--talk-name=org.kde.plasmashell"
     ],
     "modules": [
         {

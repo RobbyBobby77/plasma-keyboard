@@ -23,6 +23,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQuickWindow>
+#include <QTimer>
 #include <QWindow>
 #include <qpa/qwindowsysteminterface.h>
 
@@ -36,8 +37,8 @@ int main(int argc, char **argv)
 
     KLocalizedString::setApplicationDomain("plasma-keyboard");
 
-    KAboutData aboutData(QStringLiteral("plasma-keyboard"),
-                         i18n("Plasma Keyboard"),
+    KAboutData aboutData(QStringLiteral("plasma-keyboard-windows"),
+                         i18n("Plasma Keyboard — Windows Touch"),
                          QStringLiteral(PLASMA_KEYBOARD_VERSION_STRING),
                          i18n("An on-screen keyboard for Plasma"),
                          KAboutLicense::GPL,
@@ -45,7 +46,7 @@ int main(int argc, char **argv)
 
     aboutData.addAuthor(i18n("Aleix Pol Gonzalez"), i18n("Author"), QStringLiteral("aleixpol@kde.org"));
     aboutData.setOrganizationDomain("kde.org");
-    aboutData.setDesktopFileName(QStringLiteral("org.kde.plasma.keyboard"));
+    aboutData.setDesktopFileName(QStringLiteral("org.kde.plasma.keyboard.windows"));
     application.setWindowIcon(QIcon::fromTheme(QStringLiteral("input-keyboard-virtual")));
     aboutData.setProgramLogo(application.windowIcon());
 
@@ -53,11 +54,17 @@ int main(int argc, char **argv)
 
     KCrash::initialize();
 
+    bool preview = false;
+    QString previewScreenshot;
     {
         QCommandLineParser parser;
         aboutData.setupCommandLine(&parser);
+        parser.addOption({QStringLiteral("preview"), i18n("Open a standalone keyboard preview with a text field")});
+        parser.addOption({QStringLiteral("preview-screenshot"), i18n("Save a preview screenshot and exit"), QStringLiteral("path")});
         parser.process(application);
         aboutData.processCommandLine(&parser);
+        previewScreenshot = parser.value(QStringLiteral("preview-screenshot"));
+        preview = parser.isSet(QStringLiteral("preview")) || !previewScreenshot.isEmpty();
     }
 
     if (!PLASMA_KEYBOARD_SOUND_ENABLED) {
@@ -82,10 +89,15 @@ int main(int argc, char **argv)
 
     QQmlApplicationEngine view;
     KLocalization::setupLocalizedContext(&view);
+    view.setInitialProperties({{QStringLiteral("previewMode"), preview}});
 
-    QObject::connect(&view, &QQmlApplicationEngine::objectCreated, &application, [](QObject *object) {
+    QObject::connect(&view, &QQmlApplicationEngine::objectCreated, &application, [&application, preview, previewScreenshot](QObject *object) {
         auto window = qobject_cast<QWindow *>(object);
-        const bool initSuccessful = initInputPanelIntegration(window, InputPanelRole::Keyboard);
+        if (!window) {
+            application.exit(1);
+            return;
+        }
+        const bool initSuccessful = preview || initInputPanelIntegration(window, InputPanelRole::Keyboard);
 
         if (!initSuccessful) {
             qCCritical(PlasmaKeyboard)
@@ -95,8 +107,14 @@ int main(int argc, char **argv)
 
         window->requestActivate();
         window->setVisible(true);
+        if (!previewScreenshot.isEmpty()) {
+            QTimer::singleShot(1500, window, [window, previewScreenshot, &application] {
+                const auto image = qobject_cast<QQuickWindow *>(window)->grabWindow();
+                application.exit(image.save(previewScreenshot) ? 0 : 1);
+            });
+        }
     });
-    view.load(QUrl(QStringLiteral("qrc:/qt/qml/org/kde/plasma/keyboard/main.qml")));
+    view.load(QUrl(QStringLiteral("qrc:/qt/qml/org/kde/plasma/keyboard/windows/main.qml")));
 
     qCDebug(PlasmaKeyboard) << "Starting Plasma Keyboard application";
 

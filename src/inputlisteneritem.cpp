@@ -16,6 +16,9 @@
 #include "overlay/prefixquerytrigger.h"
 #include "overlay/textexpansiontrigger.h"
 
+#include <QDBusConnection>
+#include <QDBusMessage>
+#include <QDBusPendingCall>
 #include <QLoggingCategory>
 #include <QTextFormat>
 
@@ -332,6 +335,9 @@ QVariant InputListenerItem::inputMethodQuery(Qt::InputMethodQuery query) const
 
 void InputListenerItem::keyPressEvent(QKeyEvent *event)
 {
+    if (event->modifiers().testFlag(Qt::ControlModifier) || event->modifiers().testFlag(Qt::AltModifier) || event->key() == Qt::Key_Meta) {
+        return; // The complete synthetic combination is sent on release.
+    }
     if (IGNORED_KEYS->find(event->key()) != IGNORED_KEYS->end()) {
         return;
     }
@@ -347,6 +353,17 @@ void InputListenerItem::keyPressEvent(QKeyEvent *event)
 
 void InputListenerItem::keyReleaseEvent(QKeyEvent *event)
 {
+    if (event->key() == Qt::Key_Meta && event->modifiers() == Qt::NoModifier) {
+        QDBusConnection::sessionBus().asyncCall(QDBusMessage::createMethodCall(QStringLiteral("org.kde.plasmashell"),
+                                                                               QStringLiteral("/PlasmaShell"),
+                                                                               QStringLiteral("org.kde.PlasmaShell"),
+                                                                               QStringLiteral("activateLauncherMenu")));
+        return;
+    }
+    if (event->modifiers().testFlag(Qt::ControlModifier) || event->modifiers().testFlag(Qt::AltModifier)) {
+        m_input.sendKeyCombination(event->key(), event->modifiers());
+        return;
+    }
     if (IGNORED_KEYS->find(event->key()) != IGNORED_KEYS->end()) {
         return;
     }

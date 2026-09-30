@@ -1,0 +1,2 @@
+module org.kde.plasma.keyboard.windows
+singleton PlasmaKeyboardSettings 1.0 PlasmaKeyboardSettings.qml

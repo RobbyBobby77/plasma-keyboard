@@ -7,6 +7,7 @@
 configure_file(config-plasma-keyboard.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-plasma-keyboard.h)
 
 add_executable(plasma-keyboard)
+set_target_properties(plasma-keyboard PROPERTIES OUTPUT_NAME plasma-keyboard-windows)
 
 ecm_add_qtwayland_client_protocol(plasma-keyboard PROTOCOL ${WaylandProtocols_DATADIR}/unstable/input-method/input-method-unstable-v1.xml BASENAME input-method-unstable-v1)
 ecm_add_qtwayland_client_protocol(plasma-keyboard PROTOCOL ${WaylandProtocols_DATADIR}/unstable/text-input/text-input-unstable-v1.xml BASENAME text-input-unstable-v1)
@@ -68,13 +69,13 @@ endif()
 ecm_qt_declare_logging_category(plasma-keyboard
     HEADER logging.h
     IDENTIFIER "PlasmaKeyboard"
-    CATEGORY_NAME "org.kde.plasma.keyboard"
+    CATEGORY_NAME "org.kde.plasma.keyboard.windows"
     DESCRIPTION "Plasma Keyboard"
     DEFAULT_SEVERITY Warning
 )
 
 ecm_add_qml_module(plasma-keyboard
-    URI "org.kde.plasma.keyboard"
+    URI "org.kde.plasma.keyboard.windows"
     GENERATE_PLUGIN_SOURCE
     DEPENDENCIES
     QtQuick
@@ -118,15 +119,15 @@ target_link_libraries(plasma-keyboard
 )
 
 install(TARGETS plasma-keyboard ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
-install(PROGRAMS org.kde.plasma.keyboard.desktop DESTINATION ${KDE_INSTALL_APPDIR})
+install(PROGRAMS org.kde.plasma.keyboard.windows.desktop DESTINATION ${KDE_INSTALL_APPDIR})
 
 add_subdirectory(styles)
 add_subdirectory(qmlplugin)
 
-install(DIRECTORY layouts DESTINATION ${CMAKE_INSTALL_PREFIX}/share/plasma/keyboard)
-install(DIRECTORY overlay/diacritics DESTINATION ${CMAKE_INSTALL_PREFIX}/share/plasma/keyboard)
+install(DIRECTORY layouts DESTINATION ${KDE_INSTALL_DATADIR}/plasma/keyboard-windows)
+install(DIRECTORY overlay/diacritics DESTINATION ${KDE_INSTALL_DATADIR}/plasma/keyboard-windows)
 
 install(
-    FILES ${CMAKE_CURRENT_SOURCE_DIR}/org.kde.plasma.keyboard.metainfo.xml
+    FILES ${CMAKE_CURRENT_SOURCE_DIR}/org.kde.plasma.keyboard.windows.metainfo.xml
     DESTINATION ${KDE_INSTALL_METAINFODIR}
 )

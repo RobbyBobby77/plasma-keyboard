@@ -79,6 +79,8 @@ public:
     void keysym(uint timestamp, uint sym, KeyState state, uint modifiers);
     void key(KeyState state, quint32 scancode);
 
+    void sendKeyCombination(int key, Qt::KeyboardModifiers modifiers);
+
     ContentHint contentHint() const;
     ContentPurpose contentPurpose() const;
     uint32_t cursorPos() const;

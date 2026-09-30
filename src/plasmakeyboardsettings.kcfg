@@ -8,7 +8,7 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
                           http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
-    <kcfgfile name="plasmakeyboardrc" />
+    <kcfgfile name="plasmakeyboardwindowsrc" />
     <group name="General">
         <entry key="soundEnabled" type="bool">
             <default>false</default>
@@ -31,7 +31,7 @@
         </entry>
         <entry key="panelFillScreenWidth" type="bool">
             <label>Whether the keyboard panel fills the screen width.</label>
-            <default>true</default>
+            <default>false</default>
         </entry>
         <entry key="diacriticsPopupEnabled" type="bool">
             <label>Whether holding a physical key shows diacritic options.</label>

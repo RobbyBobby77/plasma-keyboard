@@ -6,8 +6,7 @@ import QtQuick.Controls as QQC2
 import QtQuick.VirtualKeyboard
 import QtQuick.VirtualKeyboard.Styles
 
-import org.kde.plasma.keyboard
-import org.kde.kirigami as Kirigami
+import org.kde.plasma.keyboard.windows
 
 KeyPanel {
     id: root
@@ -23,7 +22,7 @@ KeyPanel {
     property color color: {
         if (control && control.pressed) {
             return BreezeConstants.normalKeyPressedBackgroundColor;
-        } else if (control && control.highlighted) {
+        } else if (control && control.highlighted && control.keyType === QtVirtualKeyboard.KeyType.Key) {
             return BreezeConstants.highlightedKeyBackgroundColor;
         }
         return BreezeConstants.normalKeyBackgroundColor;
@@ -36,14 +35,12 @@ KeyPanel {
         anchors.fill: parent
         anchors.margins: root.padding
 
-        background: Kirigami.ShadowedRectangle {
+        background: Rectangle {
             color: root.color
             radius: root.radius
 
-            // Shadow
-            shadow.color: Qt.rgba(0, 0, 0, 0.2)
-            shadow.size: 3
-            shadow.yOffset: 1
+            border.color: control && control.pressed ? "#777777" : "#404040"
+            border.width: 1
         }
     }
 
