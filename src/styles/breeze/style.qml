@@ -81,7 +81,7 @@ KeyboardStyle {
                 font {
                     family: theme.fontFamily
                     weight: Font.Normal
-                    pixelSize: 18 * scaleHint
+                    pixelSize: 22 * scaleHint
                     capitalization: control.uppercased ? Font.AllUppercase : Font.MixedCase
                 }
             }
@@ -97,11 +97,13 @@ KeyboardStyle {
                 color: theme.keyTextColor
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
-                anchors.centerIn: parent
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.verticalCenterOffset: control.smallTextVisible ? 14 * scaleHint : 0
                 font {
                     family: theme.fontFamily
                     weight: Font.Normal
-                    pixelSize: 25 * scaleHint
+                    pixelSize: (control.smallTextVisible ? 34 : 38) * scaleHint
                     capitalization: control.uppercased ? Font.AllUppercase : Font.MixedCase
                 }
             }
@@ -173,7 +175,7 @@ KeyboardStyle {
                 anchors.centerIn: parent
                 text: InputContext.locale.startsWith("en_") ? "ENG" : InputContext.locale.split("_")[0].toUpperCase()
                 color: theme.keySmallTextColor
-                font.pixelSize: 22 * scaleHint
+                font.pixelSize: 32 * scaleHint
             }
         }
 
@@ -242,7 +244,7 @@ KeyboardStyle {
                 font {
                     family: theme.fontFamily
                     weight: Font.Normal
-                    pixelSize: 25 * scaleHint
+                    pixelSize: 38 * scaleHint
                     capitalization: Font.MixedCase
                 }
                 anchors.fill: parent
@@ -307,7 +309,7 @@ KeyboardStyle {
                 anchors.centerIn: parent
                 text: "Shift"
                 color: theme.keyTextColor
-                font.pixelSize: 25 * scaleHint
+                font.pixelSize: 38 * scaleHint
             }
         }
 
