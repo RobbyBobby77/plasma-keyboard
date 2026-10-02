@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: BSD-2-Clause
 find_package(Qt6 ${QT_MIN_VERSION} REQUIRED COMPONENTS Test QuickTest)
 include(ECMAddTests)
+configure_file(${PROJECT_SOURCE_DIR}/src/styles/breeze/style.qml
+    ${CMAKE_BINARY_DIR}/bin/QtQuick/VirtualKeyboard/Styles/WindowsTouchTest/style.qml COPYONLY)
 ecm_add_test(keycombinationtest.cpp LINK_LIBRARIES Qt::GuiPrivate Qt::Test PkgConfig::XKBCommon)
 add_test(NAME windowstouch-qml COMMAND Qt6::qmltestrunner
     -input ${CMAKE_CURRENT_SOURCE_DIR}/qml

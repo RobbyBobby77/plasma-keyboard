@@ -10,6 +10,10 @@
 #include "inputpanelintegration.h"
 
 #include <KSandbox>
+#include <QDBusConnection>
+#include <QDBusMessage>
+#include <QDBusPendingCallWatcher>
+#include <QDBusPendingReply>
 #include <QDesktopServices>
 #include <QProcess>
 #include <qnamespace.h>
@@ -49,6 +53,22 @@ void InputPanelWindow::showSettings()
 bool InputPanelWindow::initInputPanel(InputPanelRole::Role role)
 {
     return initInputPanelIntegration(this, role);
+}
+
+void InputPanelWindow::showLauncher()
+{
+    const auto message = QDBusMessage::createMethodCall(QStringLiteral("org.kde.plasmashell"),
+                                                        QStringLiteral("/PlasmaShell"),
+                                                        QStringLiteral("org.kde.PlasmaShell"),
+                                                        QStringLiteral("activateLauncherMenu"));
+    auto *watcher = new QDBusPendingCallWatcher(QDBusConnection::sessionBus().asyncCall(message), this);
+    connect(watcher, &QDBusPendingCallWatcher::finished, this, [](QDBusPendingCallWatcher *call) {
+        const QDBusPendingReply<> reply = *call;
+        if (reply.isError()) {
+            qWarning() << "Could not open the Plasma application launcher:" << reply.error().message();
+        }
+        call->deleteLater();
+    });
 }
 
 #include "moc_inputpanelwindow.cpp"

@@ -93,6 +93,7 @@ KeyboardStyle {
             }
             QQC2.Label {
                 id: keyText
+                visible: control.key !== Qt.Key_Meta
                 text: control.displayText
                 color: theme.keyTextColor
                 horizontalAlignment: Text.AlignHCenter
@@ -106,6 +107,17 @@ KeyboardStyle {
                     pixelSize: (control.smallTextVisible ? 34 : 38) * scaleHint
                     capitalization: control.uppercased ? Font.AllUppercase : Font.MixedCase
                 }
+            }
+            Image {
+                objectName: "plasmaLauncherIcon"
+                visible: control.key === Qt.Key_Meta
+                anchors.centerIn: parent
+                width: Math.min(48 * scaleHint, parent.width - 8 * scaleHint)
+                height: Math.min(width, parent.height - 8 * scaleHint)
+                // Breeze's Plasma emblem, with a fixed foreground for the dark keycap.
+                source: "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22"><path fill="' + currentStyle.theme.keyTextColor + '" d="M7 3C6.4 3 6 3.4 6 4C6 4.5 6.4 5 7 5C7.5 5 8 4.5 8 4C8 3.4 7.8 3 7 3ZM14 3L12 5L15 8L12 11L14 13L17 10L19 8L14 3ZM4.5 9C3.7 9 3 9.7 3 10.5C3 11.3 3.7 12 4.5 12C5.3 12 6 11.3 6 10.5C6 9.7 5.3 9 4.5 9ZM9 15C7.9 15 7 15.9 7 17C7 18.1 7.9 19 9 19C10.1 19 11 18.1 11 17C11 15.9 10.1 15 9 15Z"/></svg>')
+                sourceSize.width: width
+                sourceSize.height: height
             }
             states: [
                 State {

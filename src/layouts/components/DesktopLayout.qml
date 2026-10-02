@@ -14,6 +14,7 @@ KeyboardLayout {
     property bool controlActive: false
     property bool altActive: false
     property bool functionActive: false
+    signal launcherRequested()
     readonly property int shortcutModifiers: (controlActive ? Qt.ControlModifier : 0)
                                               | (altActive ? Qt.AltModifier : 0)
                                               | (InputContext.shiftActive ? Qt.ShiftModifier : 0)
@@ -218,7 +219,18 @@ KeyboardLayout {
             highlighted: desktop.functionActive
             onClicked: desktop.functionActive = !desktop.functionActive
         }
-        FunctionKey { key: Qt.Key_Meta; text: "⊞" }
+        Key {
+            objectName: "plasmaLauncherKey"
+            key: Qt.Key_Meta
+            functionKey: true
+            noKeyEvent: true
+            noModifier: true
+            Accessible.name: qsTr("Open Plasma application launcher")
+            onClicked: {
+                desktop.clearModifiers();
+                desktop.launcherRequested();
+            }
+        }
         ModifierKey {}
         SpaceKey {
             weight: 550

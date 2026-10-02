@@ -30,6 +30,7 @@ public:
     void setInteractiveRegion(QRect interactiveRegion);
 
     Q_INVOKABLE void showSettings();
+    Q_INVOKABLE void showLauncher();
 
     /**
      * Initialize this window as an input panel for the compositor.

@@ -17,11 +17,17 @@ Item {
         id: panel
         x: 20; y: 100; width: 900
     }
+    SignalSpy {
+        id: launcherSpy
+        target: panel.keyboard.keyboardLayoutLoader.item
+        signalName: "launcherRequested"
+    }
     TestCase {
         name: "WindowsTouchLayout"
         when: windowShown
         function initTestCase() {
-            VirtualKeyboardSettings.styleName = "WindowsTouch";
+            // Use this build's style rather than Qt's preferred system installation.
+            VirtualKeyboardSettings.styleName = "WindowsTouchTest";
             VirtualKeyboardSettings.activeLocales = ["en_US", "en_GB"];
             VirtualKeyboardSettings.locale = "en_US";
             editor.forceActiveFocus();
@@ -101,6 +107,26 @@ Item {
             VirtualKeyboardSettings.locale = "en_GB";
             tryVerify(() => panel.keyboard.keyboardLayoutLoader.item.ukLayout);
             tap("Shift"); tap('"'); compare(editor.text, '"');
+        }
+        function test_plasmaLauncherWithModifiers() {
+            const layout = panel.keyboard.keyboardLayoutLoader.item;
+            const launcher = findChild(layout, "plasmaLauncherKey");
+            verify(launcher !== null);
+            compare(launcher.key, Qt.Key_Meta);
+            verify(launcher.noKeyEvent);
+            const icon = findChild(launcher, "plasmaLauncherIcon");
+            verify(icon !== null);
+            verify(icon.visible);
+            tryCompare(icon, "status", Image.Ready);
+            layout.controlActive = true;
+            layout.altActive = true;
+            InputContext.priv.shiftHandler.shiftActive = true;
+            launcherSpy.clear();
+            mouseClick(launcher, launcher.width / 2, launcher.height / 2);
+            compare(launcherSpy.count, 1);
+            compare(layout.controlActive, false);
+            compare(layout.altActive, false);
+            compare(editor.text, "");
         }
     }
 }

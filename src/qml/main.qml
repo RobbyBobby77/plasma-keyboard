@@ -79,6 +79,12 @@ InputPanelWindow {
         }
     }
 
+    Connections {
+        target: inputPanel.keyboard.keyboardLayoutLoader.item
+        ignoreUnknownSignals: true
+        function onLauncherRequested() { root.showLauncher(); }
+    }
+
     // Unified overlay system for diacritics, emoji, text expansion, etc.
     OverlayWindow {
         id: overlayWindow

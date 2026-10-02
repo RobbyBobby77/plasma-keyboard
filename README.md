@@ -13,7 +13,7 @@ The keyboard retains Plasma's Qt Virtual Keyboard / Wayland input method integra
 - Ctrl and Alt latch for the next key. Both copies show the same state. Tapping again cancels the modifier; completing a shortcut clears it.
 - Fn toggles the number row to F1–F12. Shift and Caps use Qt's existing shift handler.
 - Escape, Tab, Backspace, Delete, Enter and arrow keys send real key events.
-- The ⊞ key opens Plasma's application launcher.
+- The Plasma-logo Super key opens the application launcher directly, including when Shift/Ctrl/Alt is active.
 - The compact panel can be dragged within its input surface. The header's keyboard button switches between compact and full-width modes.
 
 Windows dictation/voice input is not implemented. The current UI omits the microphone button. Keyboard size is responsive; this is a Windows-inspired design, not a pixel-exact Windows port.

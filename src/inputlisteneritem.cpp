@@ -353,7 +353,8 @@ void InputListenerItem::keyPressEvent(QKeyEvent *event)
 
 void InputListenerItem::keyReleaseEvent(QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_Meta && event->modifiers() == Qt::NoModifier) {
+    // Qt can include Meta itself or automatic Shift on a synthetic Meta event.
+    if (event->key() == Qt::Key_Meta && !(event->modifiers() & (Qt::ControlModifier | Qt::AltModifier))) {
         QDBusConnection::sessionBus().asyncCall(QDBusMessage::createMethodCall(QStringLiteral("org.kde.plasmashell"),
                                                                                QStringLiteral("/PlasmaShell"),
                                                                                QStringLiteral("org.kde.PlasmaShell"),
