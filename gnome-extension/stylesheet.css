@@ -1,0 +1,151 @@
+/*
+ * SPDX-FileCopyrightText: 2026 RobbyBobby77
+ * SPDX-License-Identifier: GPL-3.0-only
+ *
+ * Colours follow src/qmlplugin/BreezeConstants.qml. Sizes marked "JS" are
+ * also used for geometry in keyboard.js.
+ */
+
+#keyboard.wt-keyboard {
+  background-color: #202020;
+  box-shadow: none;
+  padding: 4px; /* JS: PANEL_PADDING */
+  color: #f3f3f3;
+}
+
+#keyboard.wt-keyboard.wt-floating {
+  border-radius: 4px;
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Header */
+
+.wt-header {
+  height: 42px; /* JS: HEADER_HEIGHT */
+}
+
+.wt-header-top {
+  height: 24px;
+}
+
+.wt-header-separator {
+  height: 1px;
+  background-color: #2b2b2b;
+}
+
+.wt-header-bottom {
+  height: 17px;
+}
+
+.wt-header-button {
+  width: 32px;
+  padding: 0;
+  border-radius: 2px;
+  color: #d0d0d0;
+  background-color: transparent;
+}
+
+.wt-header-button:hover,
+.wt-header-button:active {
+  background-color: #3d3d3d;
+}
+
+.wt-header-button StIcon {
+  icon-size: 14px;
+}
+
+.wt-drag-handle {
+  width: 42px;
+  height: 2px;
+  border-radius: 1px;
+  background-color: #737373;
+}
+
+/* Windows-style keys */
+
+.wt-key-container {
+  padding: 2px;
+}
+
+.wt-key {
+  padding: 0;
+  border: 1px solid #404040;
+  border-radius: 2px;
+  background-color: #353535;
+  color: #f3f3f3;
+  font-weight: normal;
+}
+
+.wt-key:hover {
+  background-color: #3b3b3b;
+}
+
+.wt-key:latched {
+  background-color: #515151;
+}
+
+.wt-key:active {
+  border-color: #777777;
+  background-color: #515151;
+}
+
+.wt-key.wt-locked {
+  border-color: #c0c0c0;
+}
+
+.wt-key-label.wt-has-small {
+  font-size: 0.9em;
+}
+
+.wt-key-small {
+  font-size: 0.58em;
+  color: #c0c0c0;
+}
+
+.wt-key.wt-key-language {
+  color: #c0c0c0;
+}
+
+.wt-key.wt-key-language .wt-key-label {
+  font-size: 0.84em;
+}
+
+.wt-key StIcon {
+  icon-size: 1.2em;
+}
+
+.wt-subkeys .wt-subkeys-box {
+  spacing: 4px;
+}
+
+/* GNOME's own layouts (other languages, number pads) in the same style */
+
+#keyboard.wt-keyboard .key-container {
+  padding: 2px;
+  spacing: 0;
+}
+
+#keyboard.wt-keyboard .keyboard-key,
+#keyboard.wt-keyboard .keyboard-key.default-key {
+  border: 1px solid #404040;
+  border-radius: 2px;
+  box-shadow: none;
+  background-color: #353535;
+  color: #f3f3f3;
+  font-weight: normal;
+}
+
+#keyboard.wt-keyboard .keyboard-key:hover {
+  background-color: #3b3b3b;
+}
+
+#keyboard.wt-keyboard .keyboard-key:active,
+#keyboard.wt-keyboard .keyboard-key:latched,
+#keyboard.wt-keyboard .keyboard-key.default-key:latched {
+  border-color: #777777;
+  background-color: #515151;
+}
+
+#keyboard.wt-keyboard .word-suggestions {
+  color: #f3f3f3;
+}

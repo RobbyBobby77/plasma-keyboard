@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SPDX-FileCopyrightText: 2026 RobbyBobby77
+  SPDX-License-Identifier: GPL-3.0-only
+-->
+<schemalist>
+  <schema id="org.gnome.shell.extensions.windows-touch-keyboard"
+          path="/org/gnome/shell/extensions/windows-touch-keyboard/">
+    <key name="fill-screen-width" type="b">
+      <default>false</default>
+      <summary>Fill the screen width</summary>
+      <description>Dock the keyboard across the bottom of the screen instead of showing a floating, draggable panel.</description>
+    </key>
+    <key name="keyboard-scale" type="d">
+      <range min="0.6" max="1.6"/>
+      <default>1.0</default>
+      <summary>Keyboard size</summary>
+      <description>Scale applied to the default key area height (24% of the screen height, clamped to 170–320 logical pixels).</description>
+    </key>
+  </schema>
+</schemalist>

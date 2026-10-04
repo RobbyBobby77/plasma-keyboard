@@ -1,0 +1,9 @@
+{
+  "uuid": "windows-touch-keyboard@robbybobby77.github.io",
+  "name": "Windows Touch Keyboard",
+  "description": "Replaces GNOME's on-screen keyboard with the dark, Windows-inspired desktop touch keyboard from the Plasma Keyboard — Windows Touch fork: full desktop layout with Esc, Tab, Ctrl/Alt latching, Fn row, arrows and a floating, draggable panel.",
+  "shell-version": ["50"],
+  "url": "https://github.com/RobbyBobby77/plasma-keyboard",
+  "settings-schema": "org.gnome.shell.extensions.windows-touch-keyboard",
+  "version-name": "1.0"
+}

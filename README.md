@@ -67,6 +67,29 @@ A separate Flatpak manifest is also included, with application ID `org.kde.plasm
 flatpak-builder --user --install --force-clean build-flatpak .flatpak-manifest.json
 ```
 
+## GNOME Shell extension
+
+GNOME's compositor does not offer the Wayland input-method protocols this keyboard uses, so the Qt program cannot act as a keyboard there. `gnome-extension/` contains a port of the same design that replaces GNOME Shell's built-in on-screen keyboard. It targets GNOME Shell 50.
+
+It subclasses GNOME's own keyboard, so GNOME still decides when to show it (tapping a text field, or any text field when the accessibility setting is on), slides the focused window up in full-width mode, and handles IBus and input sources. The extension provides:
+
+- The same desktop layout for English (US) and English (UK) input sources, with the same Ctrl/Alt latching, Fn row, Esc/Tab/Delete/arrow keys and UK # long-press for backslash/pipe. Arrows, Delete, Tab and Enter are held like physical keys, so the application's key repeat applies.
+- Shift is one-shot; double-tap or hold it to lock. Caps Lock affects letters only.
+- The Super key (GNOME logo) opens the application grid. The ENG key opens GNOME's input-source menu.
+- The header with settings, compact/full-width toggle, drag handle and hide button. The compact panel floats above the bottom edge and can be dragged anywhere on the screen.
+- Other languages and number/phone fields use GNOME's standard layouts with the dark style.
+
+Install for the current user, then log out and back in (GNOME on Wayland only discovers new extensions at login):
+
+```sh
+./gnome-extension/install.sh
+gnome-extensions enable windows-touch-keyboard@robbybobby77.github.io
+```
+
+GNOME shows its on-screen keyboard after touchscreen input. To use it with a mouse too, turn on **Show Without a Touchscreen** in the extension's settings; this is GNOME's **Accessibility → Typing → Screen Keyboard** setting. Disabling the extension restores GNOME's own keyboard.
+
+The extension was tested in a headless GNOME Shell 50.5 session: typing into a GTK 4 text field (Shift, Shift lock, Caps, symbols, UK symbols and the long-press popup, Ctrl+A, arrows, Shift+arrow selection, Backspace, Delete, Enter), Fn labels, showing on a text-field click, header dragging, compact/full-width switching, size changes, the language menu, the Super key, the settings window, the GNOME fallback layout for German, and restoring the stock keyboard on disable. It has not been tested on a physical touchscreen.
+
 ## Validation
 
 The v6.7.5 fork was built on CachyOS with Qt 6.11.2, Frameworks 6.30, and Plasma 6.7.5. Automated checks cover:
